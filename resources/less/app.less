@@ -1,0 +1,148 @@
+@import (css) url('https://fonts.googleapis.com/css?family=Montserrat:300,500,600,700&display=swap');
+
+//@primary: #0461c8;
+@primary: #001a67;
+@withe: #FFFF;
+@grey: #e9e9e9;
+/**
+===============================
+            BackGrounds
+===============================
+ */
+.bg-primary {
+    background-color: @primary !important;
+    color: @withe;
+}
+
+.bg-message {
+    background-color: #dcf8c6 !important;
+    border-radius: 5px;
+    //border: 1px solid #dcf8c6 !important;
+}
+
+.card {
+    -webkit-box-shadow: 0px 0px 18px -5px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px 0px 18px -5px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 18px -5px rgba(0, 0, 0, 0.75);
+}
+
+.card-message {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    background-color: lightskyblue;
+    //border: 1px solid grey;
+    border-radius: 5px;
+}
+
+.card-water-source {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    border: 1px solid grey;
+    border-radius: 5px;
+}
+
+
+/**
+===============================
+            Buttons
+===============================
+ */
+.btn-primary {
+    background-color: @primary !important;
+}
+
+/**
+===============================
+            Colors
+===============================
+ */
+.color-withe {
+    color: @withe;
+}
+
+html {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    background-color: @grey;
+}
+
+nav {
+    height: 50px;
+}
+
+footer {
+    font-size: .93rem;
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    overflow: hidden;
+    height: 40px;
+    padding: 16px 16px;
+}
+
+.wrapper {
+    min-height: 100vh;
+    position: relative;
+
+    /** Footer height plus 24 px */
+    padding-bottom: 39px;
+
+    .row {
+        width: 100%;
+    }
+}
+
+/**
+===============================
+        Elements
+===============================
+ */
+
+.background-cover-center {
+    background-size: cover;
+    background-position: center;
+    max-width: 100%;
+    height: 80vh
+}
+
+.background-contain-center {
+    background-size: contain;
+    background-position: center;
+}
+
+#welcome-banner {
+    position: fixed;
+    top: 0;
+    right: 10px;
+    background-color: #ffffff;
+    opacity: 0.6;
+    filter: alpha(opacity=60);
+    border-radius: 50% 0 0 50%;
+
+    h1, h5 {
+        color: #000000;
+    }
+}
+
+/**
+===============================
+        Table
+===============================
+ */
+.table-selected {
+    tbody {
+        tr:hover {
+            background-color: #cccfd6;
+            cursor: pointer;
+        }
+    }
+}
