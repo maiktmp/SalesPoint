@@ -17,3 +17,8 @@ mix.react(
     'resources/js/orders.js',
     'public/js/order.js'
 ).sourceMaps();
+
+mix.react(
+    'resources/js/take_order.js',
+    'public/js/take_order.js'
+).sourceMaps();

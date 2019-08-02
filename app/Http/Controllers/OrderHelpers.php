@@ -73,13 +73,13 @@ class OrderHelpers
                 })
                 ->get();
         return $products;
-        $orderVariant =
-            OrderHasVariant::whereFkIdStatus(Status::PENDING)
-                ->with('variant.product')
-                ->selectRaw(DB::raw('fk_id_variant, sum(quantity) as quantity'))
-                ->groupBy('fk_id_variant')
-                ->get();
-        return $orderVariant;
+//        $orderVariant =
+//            OrderHasVariant::whereFkIdStatus(Status::PENDING)
+//                ->with('variant.product')
+//                ->selectRaw(DB::raw('fk_id_variant, sum(quantity) as quantity'))
+//                ->groupBy('fk_id_variant')
+//                ->get();
+//        return $orderVariant;
     }
 
     public static function updateStatusOrderVariant($orderVariantId, $status)
@@ -106,11 +106,22 @@ class OrderHelpers
         return $order;
     }
 
-    public static function getAllOrders()
+    public static function getOrdersPendings()
     {
         $orders = Order::whereFkIdOrderStatus(OrderStatus::IN_PROGRESS)
             ->with(['variants.product'])
-            ->latest()
+            ->orderBy('created_at', 'ASC')
+            ->orderBy('fk_id_order_status', 'ASC')
+            ->get();
+        return $orders;
+    }
+
+    public static function getFullOrders()
+    {
+        $orders = Order::whereFkIdOrderStatus(OrderStatus::IN_PROGRESS)
+            ->with(['variants.product'])
+            ->orderBy('created_at', 'ASC')
+            ->orderBy('fk_id_order_status', 'ASC')
             ->get();
         return $orders;
     }

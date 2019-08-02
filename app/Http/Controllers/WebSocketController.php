@@ -65,7 +65,7 @@ class WebSocketController implements MessageComponentInterface
         $instruction = $data->instruction;
         switch ($instruction) {
             case 1:
-                $conn->send(json_encode(ProductHelpers::getProducts()));
+                $conn->send(json_encode(['instruction' => 1, 'data' => json_encode(ProductHelpers::getProducts())]));
                 break;
             case 2:
                 $order = OrderHelpers::createOrder($data->order, $data->variants);
@@ -95,9 +95,9 @@ class WebSocketController implements MessageComponentInterface
                 }
                 break;
             case 6:
-                $orders = OrderHelpers::getAllOrders();
+                $orders = OrderHelpers::getOrdersPendings();
                 foreach ($this->users as $user) {
-                    $user->send($orders);
+                    $user->send(json_encode(['instruction' => 6, 'data' => $orders]));
                 }
                 break;
         }

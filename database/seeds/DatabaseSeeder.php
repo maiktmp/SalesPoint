@@ -18,9 +18,10 @@ class DatabaseSeeder extends Seeder
         ]);
 
         DB::table('order_status')->insert([
-            ['name' => 'Cliente consumiendo'],
+            ['name' => 'Creada'],
             ['name' => 'Pagada'],
             ['name' => 'Cancelada'],
+            ['name' => 'Servida'],
         ]);
 
         $productId = DB::table('product')->insert(

@@ -14,3 +14,7 @@
 Route::get('/', function () {
     return view('resume');
 });
+
+Route::get('/take_order', function () {
+    return view('take_order');
+});

@@ -38,7 +38,7 @@ class Order extends Model
             'order_has_variant',
             'fk_id_order',
             'fk_id_variant'
-        )->withPivot(['id', 'price', 'fk_id_status', 'quantity']);
+        )->withPivot(['id', 'price', 'fk_id_status', 'quantity', 'description']);
     }
 
 
