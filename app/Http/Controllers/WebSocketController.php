@@ -53,6 +53,7 @@ class WebSocketController implements MessageComponentInterface
     {
         echo $msg;
         $data = json_decode($msg);
+
         /**
          *              Instructions
          *  1. Get AllProducts and Variants
@@ -60,7 +61,8 @@ class WebSocketController implements MessageComponentInterface
          *  3. Get Resume products pending
          *  4. Update order variant Status
          *  5. Update variant
-         *  6. get All Orders
+         *  6. get All Pending Orders
+         *  7. get All Orders
          */
         $instruction = $data->instruction;
         switch ($instruction) {
@@ -68,9 +70,20 @@ class WebSocketController implements MessageComponentInterface
                 $conn->send(json_encode(['instruction' => 1, 'data' => json_encode(ProductHelpers::getProducts())]));
                 break;
             case 2:
-                $order = OrderHelpers::createOrder($data->order, $data->variants);
+
+                $order = OrderHelpers::createOrder($data->name, $data->orderHasVariants);
                 foreach ($this->users as $user) {
-                    $user->send($order);
+                    $user->send(json_encode(['instruction' => 2, 'success' => true, 'data' => json_encode($order)]));
+                }
+
+                $orders = OrderHelpers::getOrdersPendings();
+                foreach ($this->users as $user) {
+                    $user->send(json_encode(['instruction' => 6, 'data' => $orders]));
+                }
+
+                $pending = OrderHelpers::getPending();
+                foreach ($this->users as $user) {
+                    $user->send(json_encode(['instruction' => 3, 'data' => $pending]));
                 }
                 break;
             case 3:
@@ -80,11 +93,23 @@ class WebSocketController implements MessageComponentInterface
                 }
                 break;
             case 4:
+                echo $data->orderVariantId;
                 OrderHelpers::updateStatusOrderVariant($data->orderVariantId, $data->status);
                 $pending = OrderHelpers::getPending();
                 foreach ($this->users as $user) {
                     $user->send($pending);
                 }
+
+                $orders = OrderHelpers::getOrdersPendings();
+                foreach ($this->users as $user) {
+                    $user->send(json_encode(['instruction' => 6, 'data' => $orders]));
+                }
+
+                $pending = OrderHelpers::getPending();
+                foreach ($this->users as $user) {
+                    $user->send(json_encode(['instruction' => 3, 'data' => $pending]));
+                }
+
                 break;
             case 5:
                 OrderHelpers::updateOrderStatus($data->orderId, $data->orderStatus);
@@ -93,11 +118,18 @@ class WebSocketController implements MessageComponentInterface
                 foreach ($this->users as $user) {
                     $user->send($pending);
                 }
+
                 break;
             case 6:
                 $orders = OrderHelpers::getOrdersPendings();
                 foreach ($this->users as $user) {
                     $user->send(json_encode(['instruction' => 6, 'data' => $orders]));
+                }
+                break;
+            case 7:
+                $orders =  OrderHelpers::getOrdersPendingsResume();
+                foreach ($this->users as $user) {
+                    $user->send(json_encode(['instruction' => 7, 'data' => $orders]));
                 }
                 break;
         }

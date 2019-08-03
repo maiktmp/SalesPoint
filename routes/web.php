@@ -18,3 +18,8 @@ Route::get('/', function () {
 Route::get('/take_order', function () {
     return view('take_order');
 });
+
+Route::get('/orders_resume', function () {
+    return view('orders_resume');
+});
+

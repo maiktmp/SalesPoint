@@ -1,7 +1,7 @@
 import React from 'react';
 import TextFormatter from './services/TextFormatter';
 
-class Pending extends React.Component {
+class Resume extends React.Component {
     /**
      *       Instructions
      *  1. Get AllProducts and Variants
@@ -27,8 +27,7 @@ class Pending extends React.Component {
         ];
 
         conn.onopen = () => {
-            conn.send(JSON.stringify({instruction: 3}));
-            conn.send(JSON.stringify({instruction: 6}));
+            conn.send(JSON.stringify({instruction: 7}));
         };
         conn.onmessage = this.processCallServer;
         this.state = {
@@ -42,11 +41,8 @@ class Pending extends React.Component {
     }
 
     render() {
-        return <div className="row mt-1">
-            <div className={"col-6"}>
-                {this.renderPendings()}
-            </div>
-            <div className={"col-6"}>
+        return <div className="row m-0">
+            <div className={"col-12"}>
                 {this.renderOrders()}
             </div>
         </div>
@@ -61,7 +57,7 @@ class Pending extends React.Component {
                 this.setState({productsPending: productsPending});
                 // console.log(productsPending);
                 break;
-            case 6:
+            case 7:
                 const orders = data.data;
                 console.log(orders);
                 this.setState({orders: orders});
@@ -138,42 +134,36 @@ class Pending extends React.Component {
     }
 
     renderOrderProducts(variants) {
-        let cols = [];
-        let spans = [];
-        variants.forEach((variant, index) => {
-            let span = (<React.Fragment>
-                <span
-                    className={this.variantStatus[variant.pivot.fk_id_status - 1]}>
-                    {variant.pivot.quantity}
-                </span> &nbsp;
-                <span
-                    className={this.variantStatus[variant.pivot.fk_id_status - 1]}>
-                    {variant.product.name}
-                </span>
-                <span
-                    className={this.variantStatus[variant.pivot.fk_id_status - 1]}>
-                    {variant.name}
-                </span>
-                <br/>
-                <span
-                    className={this.variantStatus[variant.pivot.fk_id_status - 1]}>
-                    {variant.pivot.description}
-                </span>
-            </React.Fragment>);
-            spans.push(span);
-            if (index % 10 === 0 && index > 0) {
-                let col = (<div className="col text-left">{spans}</div>);
-                spans = [];
-                cols.push(col);
-            }
-        });
-        if (spans.length > 0) {
-            let col = (<div className="col text-left">{spans}</div>);
-            spans = [];
-            cols.push(col);
+        return <table className={'table'}>
+            <thead>
+            </thead>
+            <tbody>
+            {variants.map(variant => {
+                return <tr className={this.variantStatus[variant.pivot.fk_id_status - 1]}>
+                    <td>{variant.product.name}</td>
+                    <td>{variant.name}</td>
+                    <td>{variant.pivot.quantity}</td>
+                    <td>{TextFormatter.asMoney(variant.pivot.quantity * variant.pivot.price)}</td>
+                    <td>{variant.pivot.fk_id_status === 1 ?
+                        <i
+                            onClick={e => this.onChangeStatus(variant.pivot.id)}
+                            className="fas fa-check-square text-success fa-2x"/> : ""}</td>
+                </tr>
+            })}
+            </tbody>
+        </table>
+    }
+
+    onChangeStatus(orderHasVariantId) {
+        const conn = new WebSocket('ws://192.168.1.111:8090');
+        conn.onopen = () => {
+            conn.send(JSON.stringify({
+                instruction: 4,
+                orderVariantId: orderHasVariantId,
+                status: 2,
+            }));
         }
-        return cols;
     }
 }
 
-export default Pending;
+export default Resume;

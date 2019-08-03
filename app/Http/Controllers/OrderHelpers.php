@@ -21,18 +21,18 @@ use function foo\func;
 
 class OrderHelpers
 {
-    public static function createOrder($orderData, $variants)
+    public static function createOrder($name, $orderHasVariants)
     {
         try {
             \DB::beginTransaction();
             $order = new Order();
-            $order->client_name = $orderData->client_name;
+            $order->client_name = $name;
             $order->fk_id_order_status = 1;
 
             $order->save();
             $variantsArray = [];
-            foreach ($variants as $variantData) {
-                $variant = Variant::find($variantData->id);
+            foreach ($orderHasVariants as $variantData) {
+                $variant = Variant::find($variantData->fk_id_variant);
                 $variantsArray[$variant->id] = [
                     "price" => $variant->price,
                     "quantity" => $variantData->quantity,
@@ -47,6 +47,7 @@ class OrderHelpers
             return $order;
         } catch (Exception $e) {
             \DB::rollBack();
+            echo $e->getMessage();
             return $e->getMessage();
         }
     }
@@ -87,6 +88,18 @@ class OrderHelpers
         $orderVariant = OrderHasVariant::find($orderVariantId);
         $orderVariant->fk_id_status = $status;
         $orderVariant->save();
+
+        $orderHasVariants = OrderHasVariant::whereFkIdOrder($orderVariant->fk_id_order)->get();
+        $completeOrder = false;
+        foreach ($orderHasVariants as $orderHasVariant) {
+            $completeOrder = $orderHasVariant && $orderHasVariant->fk_id_status !== 1;
+        }
+
+        if ($completeOrder) {
+            $order = Order::find($orderVariant->fk_id_order);
+            $order->fk_id_order_status = OrderStatus::SERVED;
+            $order->save();
+        }
         return $orderVariant;
     }
 
@@ -112,6 +125,15 @@ class OrderHelpers
             ->with(['variants.product'])
             ->orderBy('created_at', 'ASC')
             ->orderBy('fk_id_order_status', 'ASC')
+            ->get();
+        return $orders;
+    }
+
+    public static function getOrdersPendingsResume()
+    {
+        $orders = Order::with(['variants.product'])
+            ->orderBy('fk_id_order_status', 'ASC')
+            ->orderBy('created_at', 'ASC')
             ->get();
         return $orders;
     }

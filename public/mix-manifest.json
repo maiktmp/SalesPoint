@@ -1,4 +1,6 @@
 {
     "/js/order.js": "/js/order.js",
-    "/css/app.css": "/css/app.css"
+    "/css/app.css": "/css/app.css",
+    "/js/orders_resume.js": "/js/orders_resume.js",
+    "/js/take_order.js": "/js/take_order.js"
 }
