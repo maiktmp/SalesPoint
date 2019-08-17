@@ -11,6 +11,17 @@ const mix = require('laravel-mix');
  |
  */
 
+mix.webpackConfig({
+    node: {
+        fs: "empty"
+    },
+    resolve: {
+        alias: {
+            "handlebars" : "handlebars/dist/handlebars.js"
+        }
+    },
+});
+
 mix.less('resources/less/app.less', 'public/css/app.css');
 
 mix.react(

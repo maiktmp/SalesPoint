@@ -1,10 +1,11 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <script>
-    var conn = new WebSocket('ws://192.168.1.111:8090');
     // var conn = new WebSocket('ws://http://192.168.1.111/salespoint/public:8090');
+    var conn = new WebSocket('ws://192.168.1.111:8090');
     conn.onopen = function (e) {
         console.log("Connection established!");
+
         // conn.send(JSON.stringify({instruction: 1}));
         // ********************************************
         //          OPTION 2

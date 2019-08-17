@@ -1,5 +1,7 @@
 import React from 'react';
 import TextFormatter from './services/TextFormatter';
+import io from 'socket.io-client';
+
 
 class Pending extends React.Component {
     /**
@@ -22,8 +24,8 @@ class Pending extends React.Component {
         const conn = new WebSocket('ws://192.168.1.111:8090');
         this.variantStatus = [
             'text-danger',
-            'text-success',
-            'text-success',
+            'text-success line-through',
+            'text-success line-through',
         ];
 
         conn.onopen = () => {
@@ -42,13 +44,11 @@ class Pending extends React.Component {
     }
 
     render() {
-        return <div className="row mt-1">
-            <div className={"col-6"}>
-                {this.renderPendings()}
-            </div>
-            <div className={"col-6"}>
-                {this.renderOrders()}
-            </div>
+        return <div className="row mt-1 mx-0">
+            {/*<div className={"col-6"}>*/}
+            {/*{this.renderPendings()}*/}
+            {/*</div>*/}
+            {this.renderOrders()}
         </div>
     }
 
@@ -72,7 +72,7 @@ class Pending extends React.Component {
     renderPendings() {
         const products = this.state.productsPending;
         if (products.length === 0) {
-            return <h2>Sin productos pendientes por entregar</h2>
+            return <h2 className={'color-white'}>Sin productos pendientes por entregar</h2>
         }
         let columns = products.length;
         let rows = 0;
@@ -123,14 +123,22 @@ class Pending extends React.Component {
 
     renderOrders() {
         return this.state.orders.map(order => {
-            return <div className="card my-2">
-                <div className="card-body p-1">
-                    <div className="row">
-                        <div className="col-8">#{order.id} {order.client_name}</div>
-                        <div className="col-4">Total: {TextFormatter.asMoney(order.total)}</div>
-                    </div>
-                    <div className="row p-1">
-                        {this.renderOrderProducts(order.variants)}
+            return <div className="col-6">
+                <div className="card my-2 card-dark">
+                    <div className="card-body p-1">
+                        <div className="row">
+                            <div className=" color-green col-3" style={{fontSize: '1.5em'}}>
+                                {order.created_at}
+                            </div>
+                            <div className="color-green col-6" style={{fontSize: '1.5em'}}>
+                                #{order.id}
+                                {order.client_name}
+                                &nbsp;&nbsp;&nbsp;
+                            </div>
+                        </div>
+                        <div className="row p-1">
+                            {this.renderOrderProducts(order.variants)}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -143,22 +151,32 @@ class Pending extends React.Component {
         variants.forEach((variant, index) => {
             let span = (<React.Fragment>
                 <span
-                    className={this.variantStatus[variant.pivot.fk_id_status - 1]}>
-                    {variant.pivot.quantity}
-                </span> &nbsp;
-                <span
-                    className={this.variantStatus[variant.pivot.fk_id_status - 1]}>
-                    {variant.product.name}
+                    className={this.variantStatus[variant.pivot.fk_id_status - 1]}
+                    style={{fontSize: '1.4em'}}
+
+                >
+                    <b>( {variant.pivot.quantity} )</b> &nbsp;
                 </span>
                 <span
-                    className={this.variantStatus[variant.pivot.fk_id_status - 1]}>
-                    {variant.name}
+                    className={this.variantStatus[variant.pivot.fk_id_status - 1]}
+                    style={{fontSize: '1.4em'}}
+                >
+                    {variant.product.name} &nbsp;
+                </span>
+                <span
+                    className={this.variantStatus[variant.pivot.fk_id_status - 1]}
+                    style={{fontSize: '1.4em'}}
+                >
+                    {variant.name} &nbsp;
+                </span>
+                {variant.pivot.description && <br/>}
+                <span
+                    className={this.variantStatus[variant.pivot.fk_id_status - 1]}
+                    style={{fontSize: '1.4em'}}
+                >
+                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>{variant.pivot.description}</b>
                 </span>
                 <br/>
-                <span
-                    className={this.variantStatus[variant.pivot.fk_id_status - 1]}>
-                    {variant.pivot.description}
-                </span>
             </React.Fragment>);
             spans.push(span);
             if (index % 10 === 0 && index > 0) {

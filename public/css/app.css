@@ -3,6 +3,12 @@
             BackGrounds
 ===============================
  */
+.color-green {
+  color: #27e8a7;
+}
+.color-white {
+  color: #FFFF;
+}
 .bg-primary {
   background-color: #001a67 !important;
   color: #FFFF;
@@ -10,6 +16,9 @@
 .bg-message {
   background-color: #dcf8c6 !important;
   border-radius: 5px;
+}
+.card-dark {
+  background-color: #1f1f1f;
 }
 .card {
   border-radius: 10px;
@@ -107,4 +116,7 @@ footer {
 .table-selected tbody tr:hover {
   background-color: #cccfd6;
   cursor: pointer;
+}
+.line-through {
+  text-decoration: line-through;
 }

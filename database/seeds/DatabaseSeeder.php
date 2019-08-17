@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Pendiente'],
             ['name' => 'Preparado'],
             ['name' => 'Cancelado'],
+            ['name' => 'Pagado'],
         ]);
 
         DB::table('order_status')->insert([
@@ -30,9 +31,10 @@ class DatabaseSeeder extends Seeder
 
         DB::table('variant')->insert([
             ['name' => 'Al pastor', 'price' => 15, 'fk_id_product' => $productId],
-            ['name' => 'Chorizo', 'price' => 15, 'fk_id_product' => $productId],
+            ['name' => 'Longaniza', 'price' => 15, 'fk_id_product' => $productId],
             ['name' => 'Bisteck', 'price' => 15, 'fk_id_product' => $productId],
-            ['name' => 'Otro', 'price' => 20, 'fk_id_product' => $productId],
+            ['name' => 'Campechano', 'price' => 15, 'fk_id_product' => $productId],
+            ['name' => 'Otro', 'price' => 15, 'fk_id_product' => $productId],
         ]);
 
         $productId = DB::table('product')->insertGetId(
@@ -40,13 +42,14 @@ class DatabaseSeeder extends Seeder
         );
 
         DB::table('variant')->insert([
-            ['name' => 'Al pastor', 'price' => 20, 'fk_id_product' => $productId],
-            ['name' => 'Chorizo', 'price' => 20, 'fk_id_product' => $productId],
-            ['name' => 'Bisteck', 'price' => 20, 'fk_id_product' => $productId],
-            ['name' => 'Mole', 'price' => 20, 'fk_id_product' => $productId],
-            ['name' => 'Tinga', 'price' => 20, 'fk_id_product' => $productId],
-            ['name' => 'Queso', 'price' => 20, 'fk_id_product' => $productId],
-            ['name' => 'Otro', 'price' => 20, 'fk_id_product' => $productId],
+            ['name' => 'Al pastor', 'price' => 25, 'fk_id_product' => $productId],
+            ['name' => 'Chorizo', 'price' => 25, 'fk_id_product' => $productId],
+            ['name' => 'Bisteck', 'price' => 25, 'fk_id_product' => $productId],
+            ['name' => 'Mole', 'price' => 25, 'fk_id_product' => $productId],
+            ['name' => 'Tinga', 'price' => 25, 'fk_id_product' => $productId],
+            ['name' => 'Queso', 'price' => 25, 'fk_id_product' => $productId],
+            ['name' => 'Campechano', 'price' => 25, 'fk_id_product' => $productId],
+            ['name' => 'Otro', 'price' => 25, 'fk_id_product' => $productId],
         ]);
 
         $productId = DB::table('product')->insertGetId(
@@ -56,6 +59,7 @@ class DatabaseSeeder extends Seeder
         DB::table('variant')->insert([
             ['name' => 'Mole', 'price' => 20, 'fk_id_product' => $productId],
             ['name' => 'Tinga', 'price' => 20, 'fk_id_product' => $productId],
+            ['name' => 'Pollo', 'price' => 20, 'fk_id_product' => $productId],
             ['name' => 'Otro', 'price' => 20, 'fk_id_product' => $productId],
         ]);
 
@@ -64,9 +68,9 @@ class DatabaseSeeder extends Seeder
         );
 
         DB::table('variant')->insert([
-            ['name' => 'Sencillas', 'price' => 30, 'fk_id_product' => $productId],
-            ['name' => 'Dobles', 'price' => 35, 'fk_id_product' => $productId],
-            ['name' => 'Media orden', 'price' => 15, 'fk_id_product' => $productId],
+            ['name' => 'Sencillas', 'price' => 35, 'fk_id_product' => $productId],
+            ['name' => 'Con carne', 'price' => 40, 'fk_id_product' => $productId],
+            ['name' => 'Media orden', 'price' => 20, 'fk_id_product' => $productId],
         ]);
 
         $productId = DB::table('product')->insertGetId(
@@ -74,10 +78,28 @@ class DatabaseSeeder extends Seeder
         );
 
         DB::table('variant')->insert([
-            ['name' => 'Sencillos', 'price' => 30, 'fk_id_product' => $productId],
-            ['name' => 'Dobles', 'price' => 35, 'fk_id_product' => $productId],
+            ['name' => 'Sencillos', 'price' => 35, 'fk_id_product' => $productId],
+            ['name' => 'Con carne', 'price' => 40, 'fk_id_product' => $productId],
         ]);
 
+
+        $productId = DB::table('product')->insertGetId(
+            ['name' => 'Tacos dorados']
+        );
+
+        DB::table('variant')->insert([
+            ['name' => 'Orden', 'price' => 35, 'fk_id_product' => $productId],
+            ['name' => 'Pieza', 'price' => 10, 'fk_id_product' => $productId],
+        ]);
+
+
+        $productId = DB::table('product')->insertGetId(
+            ['name' => 'Huarache']
+        );
+
+        DB::table('variant')->insert([
+            ['name' => 'Con carne', 'price' => 35, 'fk_id_product' => $productId],
+        ]);
 
         $productId = DB::table('product')->insertGetId(
             ['name' => 'Bebidas']
@@ -88,7 +110,5 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Agua', 'price' => 10, 'fk_id_product' => $productId],
             ['name' => 'Otro', 'price' => 10, 'fk_id_product' => $productId],
         ]);
-
-
     }
 }

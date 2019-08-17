@@ -85,6 +85,11 @@ class WebSocketController implements MessageComponentInterface
                 foreach ($this->users as $user) {
                     $user->send(json_encode(['instruction' => 3, 'data' => $pending]));
                 }
+
+                $orders =  OrderHelpers::getOrdersPendingsResume();
+                foreach ($this->users as $user) {
+                    $user->send(json_encode(['instruction' => 7, 'data' => $orders]));
+                }
                 break;
             case 3:
                 $pending = OrderHelpers::getPending();
@@ -108,6 +113,11 @@ class WebSocketController implements MessageComponentInterface
                 $pending = OrderHelpers::getPending();
                 foreach ($this->users as $user) {
                     $user->send(json_encode(['instruction' => 3, 'data' => $pending]));
+                }
+
+                $orders =  OrderHelpers::getOrdersPendingsResume();
+                foreach ($this->users as $user) {
+                    $user->send(json_encode(['instruction' => 7, 'data' => $orders]));
                 }
 
                 break;

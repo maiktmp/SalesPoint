@@ -15,7 +15,8 @@ class OrderStatus extends Model
 {
     public const IN_PROGRESS = 1;
     public const PAY = 2;
-    public const SERVED = 3;
+    public const CANCELED = 3;
+    public const SERVED = 4;
 
     protected $table = "order_status";
 }

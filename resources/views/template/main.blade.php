@@ -13,7 +13,7 @@
 <div class='main-container'>
     <header>
     </header>
-    <section class="wrapper">
+    <section class="wrapper" @yield('wrapper-style')>
         @include('components.navbar')
         @yield('content')
         @include('components.footer')

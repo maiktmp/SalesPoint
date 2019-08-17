@@ -212,8 +212,10 @@ class OrderMenu extends React.Component {
     }
 
     onCreateOrder() {
-        console.log(this.state.orderProducts);
+        console.table(this.state.orderProducts);
+
         const clientName = document.getElementById('inp-order-client-name').value;
+
         const conn = new WebSocket('ws://192.168.1.111:8090');
         conn.onopen = () => {
             conn.send(JSON.stringify({instruction: 1}));

@@ -18,12 +18,15 @@ class Resume extends React.Component {
         this.processCallServer = this.processCallServer.bind(this);
         this.renderPendings = this.renderPendings.bind(this);
         this.renderOrders = this.renderOrders.bind(this);
+        this.onChangeClientName = this.onChangeClientName.bind(this);
+        this.filterOrders = this.filterOrders.bind(this);
 
         const conn = new WebSocket('ws://192.168.1.111:8090');
         this.variantStatus = [
             'text-danger',
             'text-success',
             'text-success',
+            'text-muted',
         ];
 
         conn.onopen = () => {
@@ -32,7 +35,9 @@ class Resume extends React.Component {
         conn.onmessage = this.processCallServer;
         this.state = {
             productsPending: [],
-            orders: []
+            orders: [],
+            ordersFiltered: [],
+            clientName: ""
         }
     }
 
@@ -42,6 +47,13 @@ class Resume extends React.Component {
 
     render() {
         return <div className="row m-0">
+            <div className="col-12">
+                <input
+                    onChange={this.onChangeClientName}
+                    placeholder="Nombre del cliente"
+                    type="text"
+                    className="form-control"/>
+            </div>
             <div className={"col-12"}>
                 {this.renderOrders()}
             </div>
@@ -61,7 +73,27 @@ class Resume extends React.Component {
                 const orders = data.data;
                 console.log(orders);
                 this.setState({orders: orders});
+                this.filterOrders();
                 break;
+        }
+    }
+
+    onChangeClientName(e) {
+        let value = e.target.value;
+        value = value.toUpperCase();
+        this.setState({clientName: value});
+        this.filterOrders();
+    }
+
+    filterOrders() {
+        let value = this.state.clientName;
+        this.setState({ordersFiltered: []});
+        if (value.length > 0) {
+            let ordersFiltered = this.state.orders.filter(order => order.client_name.toUpperCase().includes(value));
+            console.log(ordersFiltered);
+            this.setState({ordersFiltered: ordersFiltered});
+        } else {
+            this.setState({ordersFiltered: []});
         }
     }
 
@@ -118,6 +150,22 @@ class Resume extends React.Component {
     }
 
     renderOrders() {
+
+        if (this.state.ordersFiltered.length > 0) {
+            return this.state.ordersFiltered.map(order => {
+                return <div className="card my-2">
+                    <div className="card-body p-1">
+                        <div className="row">
+                            <div className="col-8">#{order.id} {order.client_name}</div>
+                            <div className="col-4">Total: {TextFormatter.asMoney(order.total)}</div>
+                        </div>
+                        <div className="row p-1">
+                            {this.renderOrderProducts(order.variants)}
+                        </div>
+                    </div>
+                </div>
+            })
+        }
         return this.state.orders.map(order => {
             return <div className="card my-2">
                 <div className="card-body p-1">
@@ -141,26 +189,59 @@ class Resume extends React.Component {
             {variants.map(variant => {
                 return <tr className={this.variantStatus[variant.pivot.fk_id_status - 1]}>
                     <td>{variant.product.name}</td>
-                    <td>{variant.name}</td>
+                    <td>
+                        {variant.name} <br/>
+                        {variant.pivot.description}
+                    </td>
                     <td>{variant.pivot.quantity}</td>
                     <td>{TextFormatter.asMoney(variant.pivot.quantity * variant.pivot.price)}</td>
-                    <td>{variant.pivot.fk_id_status === 1 ?
-                        <i
-                            onClick={e => this.onChangeStatus(variant.pivot.id)}
-                            className="fas fa-check-square text-success fa-2x"/> : ""}</td>
+                    <td>{
+                        variant.pivot.fk_id_status === 1 ?
+                            <React.Fragment>
+                                <i
+                                    onClick={e => this.onChangeStatus(e, variant.pivot.id, 2)}
+                                    className="fas fa-check-square text-success fa-2x"/>
+                                &nbsp;&nbsp;&nbsp;
+                                <i
+                                    onClick={e => this.onChangeStatus(e, variant.pivot.id, 3)}
+                                    className="fas fa-trash-alt text-danger fa-2x"/>
+                                &nbsp;&nbsp;&nbsp;
+                            </React.Fragment>
+                            : ""
+
+
+                    }
+                        {
+                            variant.pivot.fk_id_status === 2 ?
+                                <i
+                                    onClick={e => this.onChangeStatus(e, variant.pivot.id, 4)}
+                                    className="fas fas fa-dollar-sign text-success fa-2x"/> : ""
+                        }
+                    </td>
                 </tr>
             })}
             </tbody>
         </table>
     }
 
-    onChangeStatus(orderHasVariantId) {
+    onChangeStatus(e, orderHasVariantId, status) {
+        if (e.target.classList.contains('fa-check-square')) {
+            e.target.classList.remove("fa-check-square");
+            e.target.classList.add("fa-spin");
+            e.target.classList.add("fa-spinner");
+        }
         const conn = new WebSocket('ws://192.168.1.111:8090');
+        /**
+         1    Pendiente
+         2    Preparado
+         3    Cancelado
+         4    Pagado
+         */
         conn.onopen = () => {
             conn.send(JSON.stringify({
                 instruction: 4,
                 orderVariantId: orderHasVariantId,
-                status: 2,
+                status: status,
             }));
         }
     }

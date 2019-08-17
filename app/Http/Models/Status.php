@@ -16,6 +16,7 @@ class Status extends Model
     public const PENDING = 1;
     public const PREPARED = 2;
     public const CANCELED = 3;
+    public const PAY = 4;
 
     protected $table = "status";
 }

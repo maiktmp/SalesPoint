@@ -6,10 +6,13 @@
 @push('scripts')
     <script src="{{asset('js/order.js')}}"></script>
 @endpush
+@section('wrapper-style')
+    style="background-color: black"
+    @endsection
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12 text-center">
+    <div class="container-fluid p-0">
+        <div class="row m-0">
+            <div class="col-12 text-center p-0">
                 <div id="react-dom" class="text-center"></div>
             </div>
         </div>

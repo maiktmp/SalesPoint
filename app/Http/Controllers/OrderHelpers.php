@@ -17,7 +17,6 @@ use App\Http\Models\Status;
 use App\Http\Models\Variant;
 use DB;
 use Exception;
-use function foo\func;
 
 class OrderHelpers
 {
@@ -30,18 +29,18 @@ class OrderHelpers
             $order->fk_id_order_status = 1;
 
             $order->save();
-            $variantsArray = [];
             foreach ($orderHasVariants as $variantData) {
                 $variant = Variant::find($variantData->fk_id_variant);
-                $variantsArray[$variant->id] = [
-                    "price" => $variant->price,
-                    "quantity" => $variantData->quantity,
-                    "fk_id_status" => 1,
-                    "description" => $variantData->description ?? null,
-                ];
+                $orderHasVariant = new OrderHasVariant();
+                $orderHasVariant->price = $variant->price;
+                $orderHasVariant->quantity = $variantData->quantity;
+                $orderHasVariant->fk_id_status = 1;
+                $orderHasVariant->description = $variantData->description ?? null;
+                $orderHasVariant->fk_id_variant = $variantData->fk_id_variant;
+                $orderHasVariant->fk_id_order = $order->id;
+                $orderHasVariant->save();
             }
-            $order->variants()->sync($variantsArray);
-            $order->save();
+
             \DB::commit();
             $order->load(['variants.product']);
             return $order;
@@ -85,21 +84,40 @@ class OrderHelpers
 
     public static function updateStatusOrderVariant($orderVariantId, $status)
     {
-        $orderVariant = OrderHasVariant::find($orderVariantId);
-        $orderVariant->fk_id_status = $status;
-        $orderVariant->save();
-
-        $orderHasVariants = OrderHasVariant::whereFkIdOrder($orderVariant->fk_id_order)->get();
-        $completeOrder = false;
-        foreach ($orderHasVariants as $orderHasVariant) {
-            $completeOrder = $orderHasVariant && $orderHasVariant->fk_id_status !== 1;
+        if ($status == Status::CANCELED) {
+            $orderVariant = OrderHasVariant::find($orderVariantId);
+            $orderVariant->delete();
+        } else {
+            $orderVariant = OrderHasVariant::find($orderVariantId);
+            $orderVariant->fk_id_status = $status;
+            $orderVariant->save();
         }
 
+        $orderHasVariants = OrderHasVariant::whereFkIdOrder($orderVariant->fk_id_order)->get();
+
+        $completeOrder = true;
+
+
+        $variantPay = OrderHasVariant::whereFkIdStatus(Status::PAY)
+            ->whereFkIdOrder($orderVariant->fk_id_order)
+            ->count();
+
+        foreach ($orderHasVariants as $orderHasVariant) {
+            $completeOrder = $completeOrder && $orderHasVariant->fk_id_status !== 1;
+        }
+
+
+        $order = Order::find($orderVariant->fk_id_order);
         if ($completeOrder) {
-            $order = Order::find($orderVariant->fk_id_order);
             $order->fk_id_order_status = OrderStatus::SERVED;
             $order->save();
         }
+
+        if ($variantPay === $orderHasVariants->count()) {
+            $order->fk_id_order_status = OrderStatus::PAY;
+            $order->save();
+        }
+
         return $orderVariant;
     }
 
@@ -142,7 +160,7 @@ class OrderHelpers
     {
         $orders = Order::whereFkIdOrderStatus(OrderStatus::IN_PROGRESS)
             ->with(['variants.product'])
-            ->orderBy('created_at', 'ASC')
+            ->orderBy('id', 'ASC')
             ->orderBy('fk_id_order_status', 'ASC')
             ->get();
         return $orders;

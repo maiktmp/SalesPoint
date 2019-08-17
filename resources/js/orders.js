@@ -10,5 +10,15 @@ $(document).ready(e => {
         <Pending/>,
         rootNode
     );
-    $('#modal-upsert').modal('show');
+
+    function reloj() {
+        var fecha = new Date();
+        var hr = fecha.getHours();
+        var min = fecha.getMinutes();
+        var seg = fecha.getSeconds();
+        var r = document.getElementById("reloj");
+        r.innerHTML = hr + ":" + min + ":" + seg;
+        setTimeout(reloj, 1000);
+    };
+    reloj();
 });
