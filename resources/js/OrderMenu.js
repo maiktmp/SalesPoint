@@ -20,7 +20,7 @@ class OrderMenu extends React.Component {
         this.onDeleteProduct = this.onDeleteProduct.bind(this);
         this.onCreateOrder = this.onCreateOrder.bind(this);
 
-        const conn = new WebSocket('ws://192.168.1.111:8090');
+        const conn = new WebSocket('ws://192.168.1.119:8090');
         conn.onopen = () => {
             conn.send(JSON.stringify({instruction: 1}));
             // conn.send(JSON.stringify({instruction: 6}));
@@ -28,6 +28,7 @@ class OrderMenu extends React.Component {
         conn.onmessage = this.processCallServer;
 
         this.state = {
+            error: undefined,
             orderProducts: [],
             products: [],
             client_name: ""
@@ -40,6 +41,11 @@ class OrderMenu extends React.Component {
 
     render() {
         return <div className="row mt-1 mx-0">
+            <div className="col-12">
+                {this.state.error && <div className="alert alert-danger">
+                    <b>{this.state.error}</b>
+                </div>}
+            </div>
             <div className={"col-12 px-0"}>
                 {this.renderOrder()}
             </div>
@@ -152,7 +158,7 @@ class OrderMenu extends React.Component {
                             {
                                 this.state.orderProducts.map(orderHasVariant => {
                                     console.log(orderHasVariant);
-                                    return <React.Fragment>
+                                    return <React.Fragment key={orderHasVariant.id}>
                                         <tr>
                                             <td>{orderHasVariant.variant.product.name}</td>
                                             <td>{orderHasVariant.variant.name}</td>
@@ -212,11 +218,16 @@ class OrderMenu extends React.Component {
     }
 
     onCreateOrder() {
-        console.table(this.state.orderProducts);
+        console.table(this.state.orderProducts.length);
+        this.setState({error: undefined});
+        if (this.state.orderProducts.length === 0) {
+            this.setState({error: "No hay productos en la orden, verifique que agrego los productos"});
+            return null;
+        }
 
         const clientName = document.getElementById('inp-order-client-name').value;
 
-        const conn = new WebSocket('ws://192.168.1.111:8090');
+        const conn = new WebSocket('ws://192.168.1.119:8090');
         conn.onopen = () => {
             conn.send(JSON.stringify({instruction: 1}));
             // conn.send(JSON.stringify({instruction: 6}));

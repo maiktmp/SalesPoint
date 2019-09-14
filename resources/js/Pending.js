@@ -21,9 +21,9 @@ class Pending extends React.Component {
         this.renderPendings = this.renderPendings.bind(this);
         this.renderOrders = this.renderOrders.bind(this);
 
-        const conn = new WebSocket('ws://192.168.1.111:8090');
+        const conn = new WebSocket('ws://192.168.1.119:8090');
         this.variantStatus = [
-            'text-danger',
+            '',
             'text-success line-through',
             'text-success line-through',
         ];
@@ -123,21 +123,35 @@ class Pending extends React.Component {
 
     renderOrders() {
         return this.state.orders.map(order => {
-            return <div className="col-6">
+            return <div key={order.id} className="col-6">
                 <div className="card my-2 card-dark">
                     <div className="card-body p-1">
-                        <div className="row">
-                            <div className=" color-green col-3" style={{fontSize: '1.5em'}}>
-                                {order.created_at}
+                        <div className="row m-0">
+                            <div className="col-12">
+                                <table className="table">
+                                    <tbody>
+                                    <tr>
+                                        <td className="color-green" style={{fontSize: '1.5em'}}>
+                                            #{order.id}
+                                            &nbsp;&nbsp;&nbsp;&nbsp;
+                                            {order.client_name}
+                                            &nbsp;&nbsp;&nbsp;&nbsp;
+                                            {order.created_at}
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
-                            <div className="color-green col-6" style={{fontSize: '1.5em'}}>
-                                #{order.id}
-                                {order.client_name}
-                                &nbsp;&nbsp;&nbsp;
-                            </div>
+
                         </div>
-                        <div className="row p-1">
-                            {this.renderOrderProducts(order.variants)}
+                        <div className="row p-1 m-0">
+                            <div className="col-12">
+                                <table className="table">
+                                    <tbody>
+                                    {this.renderOrderProducts(order.variants)}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -146,51 +160,45 @@ class Pending extends React.Component {
     }
 
     renderOrderProducts(variants) {
-        let cols = [];
-        let spans = [];
-        variants.forEach((variant, index) => {
-            let span = (<React.Fragment>
-                <span
-                    className={this.variantStatus[variant.pivot.fk_id_status - 1]}
-                    style={{fontSize: '1.4em'}}
-
-                >
-                    <b>( {variant.pivot.quantity} )</b> &nbsp;
-                </span>
-                <span
-                    className={this.variantStatus[variant.pivot.fk_id_status - 1]}
-                    style={{fontSize: '1.4em'}}
-                >
-                    {variant.product.name} &nbsp;
-                </span>
-                <span
-                    className={this.variantStatus[variant.pivot.fk_id_status - 1]}
-                    style={{fontSize: '1.4em'}}
-                >
-                    {variant.name} &nbsp;
-                </span>
-                {variant.pivot.description && <br/>}
-                <span
-                    className={this.variantStatus[variant.pivot.fk_id_status - 1]}
-                    style={{fontSize: '1.4em'}}
-                >
-                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>{variant.pivot.description}</b>
-                </span>
-                <br/>
-            </React.Fragment>);
-            spans.push(span);
-            if (index % 10 === 0 && index > 0) {
-                let col = (<div className="col text-left">{spans}</div>);
-                spans = [];
-                cols.push(col);
-            }
+        const renderComments = (variant) => {
+            return <tr
+                className={this.variantStatus[variant.pivot.fk_id_status - 1]}
+                style={{fontSize: '1.4em'}}>
+                <td className={'p-0'} colSpan={3}><b>{variant.pivot.description}</b></td>
+            </tr>
+        };
+        let rows = [];
+        variants.forEach((variant) => {
+            let row = (
+                <React.Fragment key={variant.pivot.id}>
+                    <tr>
+                        <td
+                            className={this.variantStatus[variant.pivot.fk_id_status - 1]}
+                            style={{
+                                color: variant.product.color,
+                                textAlign: "text-left",
+                                fontSize: '1.4em',
+                                width: "15%"
+                            }}>
+                            <b>{variant.pivot.quantity}</b>
+                        </td>
+                        <td
+                            className={this.variantStatus[variant.pivot.fk_id_status - 1]}
+                            style={{color: variant.product.color, textAlign: "t.lessext-left", fontSize: '1.4em'}}>
+                            {variant.product.name.toUpperCase()}
+                        </td>
+                        <td
+                            className={this.variantStatus[variant.pivot.fk_id_status - 1]}
+                            style={{color: variant.product.color, textAlign: "text-left", fontSize: '1.4em'}}>
+                            {variant.name}
+                        </td>
+                    </tr>
+                    {variant.pivot.description && renderComments(variant)}
+                </React.Fragment>
+            );
+            rows.push(row);
         });
-        if (spans.length > 0) {
-            let col = (<div className="col text-left">{spans}</div>);
-            spans = [];
-            cols.push(col);
-        }
-        return cols;
+        return rows;
     }
 }
 

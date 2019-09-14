@@ -120,3 +120,6 @@ footer {
 .line-through {
   text-decoration: line-through;
 }
+.table tr td {
+  border: white 1px solid;
+}

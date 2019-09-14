@@ -4,7 +4,7 @@
 @section('title', 'Resumen')
 
 @push('scripts')
-    <script src="{{asset('js/order.js')}}"></script>
+    <script src="{{asset('js/order.js?v=2')}}"></script>
 @endpush
 @section('wrapper-style')
     style="background-color: black"

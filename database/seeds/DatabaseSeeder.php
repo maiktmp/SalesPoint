@@ -11,6 +11,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $color1 = "#ff78b9";
+        $color2 = "#fcff62";
+
         DB::table('status')->insert([
             ['name' => 'Pendiente'],
             ['name' => 'Preparado'],
@@ -26,7 +29,10 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $productId = DB::table('product')->insert(
-            ['name' => 'Tacos']
+            [
+                'name' => 'Tacos',
+                'color' => $color1,
+            ]
         );
 
         DB::table('variant')->insert([
@@ -38,7 +44,10 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $productId = DB::table('product')->insertGetId(
-            ['name' => 'Quesadillas']
+            [
+                'name' => 'Quesadillas',
+                'color' => $color1
+            ]
         );
 
         DB::table('variant')->insert([
@@ -53,7 +62,10 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $productId = DB::table('product')->insertGetId(
-            ['name' => 'Tostadas']
+            [
+                'name' => 'Tostadas',
+                'color' => $color2
+            ]
         );
 
         DB::table('variant')->insert([
@@ -64,8 +76,10 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $productId = DB::table('product')->insertGetId(
-            ['name' => 'Enchiladas']
-        );
+            [
+                'name' => 'Enchiladas',
+                'color' => $color2,
+            ]);
 
         DB::table('variant')->insert([
             ['name' => 'Sencillas', 'price' => 35, 'fk_id_product' => $productId],
@@ -74,17 +88,22 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $productId = DB::table('product')->insertGetId(
-            ['name' => 'Chilaquiles']
+            [
+                'name' => 'Chilaquiles',
+                'color' => $color2,
+            ]
         );
 
         DB::table('variant')->insert([
-            ['name' => 'Sencillos', 'price' => 35, 'fk_id_product' => $productId],
             ['name' => 'Con carne', 'price' => 40, 'fk_id_product' => $productId],
         ]);
 
 
         $productId = DB::table('product')->insertGetId(
-            ['name' => 'Tacos dorados']
+            [
+                'name' => 'Tacos dorados',
+                'color' => $color2,
+            ]
         );
 
         DB::table('variant')->insert([
@@ -94,15 +113,33 @@ class DatabaseSeeder extends Seeder
 
 
         $productId = DB::table('product')->insertGetId(
-            ['name' => 'Huarache']
+            [
+                'name' => 'Huarache',
+                'color' => $color1
+            ]
         );
 
         DB::table('variant')->insert([
             ['name' => 'Con carne', 'price' => 35, 'fk_id_product' => $productId],
         ]);
 
+
         $productId = DB::table('product')->insertGetId(
-            ['name' => 'Bebidas']
+            [
+                'name' => 'Hamburguesas',
+                'color' => $color1,
+            ]
+        );
+
+        DB::table('variant')->insert([
+            ['name' => 'Pieza', 'price' => 35, 'fk_id_product' => $productId],
+        ]);
+
+        $productId = DB::table('product')->insertGetId(
+            [
+                'name' => 'Bebidas',
+                'color' => $color1,
+            ]
         );
 
         DB::table('variant')->insert([

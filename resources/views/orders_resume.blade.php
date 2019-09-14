@@ -3,7 +3,7 @@
 @extends('template.main')
 @section('title', 'Resumen de ordenes')
 @push('scripts')
-    <script src="{{asset('js/orders_resume.js')}}"></script>
+    <script src="{{asset('js/orders_resume.js?v=2')}}"></script>
 @endpush
 @section('content')
     <div class="container-fluid p-0">

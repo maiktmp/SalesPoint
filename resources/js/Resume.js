@@ -21,7 +21,7 @@ class Resume extends React.Component {
         this.onChangeClientName = this.onChangeClientName.bind(this);
         this.filterOrders = this.filterOrders.bind(this);
 
-        const conn = new WebSocket('ws://192.168.1.111:8090');
+        const conn = new WebSocket('ws://192.168.1.119:8090');
         this.variantStatus = [
             'text-danger',
             'text-success',
@@ -150,10 +150,9 @@ class Resume extends React.Component {
     }
 
     renderOrders() {
-
         if (this.state.ordersFiltered.length > 0) {
             return this.state.ordersFiltered.map(order => {
-                return <div className="card my-2">
+                return <div key={order.id} className="card my-2">
                     <div className="card-body p-1">
                         <div className="row">
                             <div className="col-8">#{order.id} {order.client_name}</div>
@@ -167,7 +166,7 @@ class Resume extends React.Component {
             })
         }
         return this.state.orders.map(order => {
-            return <div className="card my-2">
+            return <div key={order.id} className="card my-2">
                 <div className="card-body p-1">
                     <div className="row">
                         <div className="col-8">#{order.id} {order.client_name}</div>
@@ -187,7 +186,7 @@ class Resume extends React.Component {
             </thead>
             <tbody>
             {variants.map(variant => {
-                return <tr className={this.variantStatus[variant.pivot.fk_id_status - 1]}>
+                return <tr key={variant.pivot.id} className={this.variantStatus[variant.pivot.fk_id_status - 1]}>
                     <td>{variant.product.name}</td>
                     <td>
                         {variant.name} <br/>
@@ -230,7 +229,7 @@ class Resume extends React.Component {
             e.target.classList.add("fa-spin");
             e.target.classList.add("fa-spinner");
         }
-        const conn = new WebSocket('ws://192.168.1.111:8090');
+        const conn = new WebSocket('ws://192.168.1.119:8090');
         /**
          1    Pendiente
          2    Preparado

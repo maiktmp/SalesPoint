@@ -21,6 +21,7 @@ class CreateSchema extends Migration
         Schema::create('product', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->string('color');
         });
 
         Schema::create('order', function (Blueprint $table) {
