@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $color1 = "#ff78b9";
+        $color1 = "#F797E7";
         $color2 = "#fcff62";
 
         DB::table('status')->insert([
@@ -133,6 +133,29 @@ class DatabaseSeeder extends Seeder
 
         DB::table('variant')->insert([
             ['name' => 'Pieza', 'price' => 35, 'fk_id_product' => $productId],
+        ]);
+
+        $productId = DB::table('product')->insertGetId(
+            [
+                'name' => 'Pozole',
+                'color' => $color2,
+            ]
+        );
+
+        DB::table('variant')->insert([
+            ['name' => 'Plato', 'price' => 30, 'fk_id_product' => $productId],
+        ]);
+
+        $productId = DB::table('product')->insertGetId(
+            [
+                'name' => 'Pambazos',
+                'color' => $color1,
+            ]
+        );
+
+        DB::table('variant')->insert([
+            ['name' => 'Mole', 'price' => 20, 'fk_id_product' => $productId],
+            ['name' => 'Papas', 'price' => 20, 'fk_id_product' => $productId],
         ]);
 
         $productId = DB::table('product')->insertGetId(

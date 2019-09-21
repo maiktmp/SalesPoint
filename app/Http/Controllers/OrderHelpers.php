@@ -17,6 +17,7 @@ use App\Http\Models\Status;
 use App\Http\Models\Variant;
 use DB;
 use Exception;
+use function foo\func;
 
 class OrderHelpers
 {
@@ -140,7 +141,9 @@ class OrderHelpers
     public static function getOrdersPendings()
     {
         $orders = Order::whereFkIdOrderStatus(OrderStatus::IN_PROGRESS)
-            ->with(['variants.product'])
+            ->with(['variants' => function ($q) {
+                $q->orderBy('fk_id_status', 'ASC');
+            }, 'variants.product'])
             ->orderBy('created_at', 'ASC')
             ->orderBy('fk_id_order_status', 'ASC')
             ->get();
@@ -149,7 +152,9 @@ class OrderHelpers
 
     public static function getOrdersPendingsResume()
     {
-        $orders = Order::with(['variants.product'])
+        $orders = Order::with(['variants' => function ($q) {
+            $q->orderBy('fk_id_status', 'ASC');
+        }, 'variants.product'])
             ->orderBy('fk_id_order_status', 'ASC')
             ->orderBy('created_at', 'ASC')
             ->get();

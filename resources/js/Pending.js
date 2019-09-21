@@ -163,7 +163,7 @@ class Pending extends React.Component {
         const renderComments = (variant) => {
             return <tr
                 className={this.variantStatus[variant.pivot.fk_id_status - 1]}
-                style={{fontSize: '1.4em'}}>
+                style={{fontSize: '1.4em', color: variant.product.color}}>
                 <td className={'p-0'} colSpan={3}><b>{variant.pivot.description}</b></td>
             </tr>
         };
