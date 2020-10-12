@@ -8,7 +8,7 @@ use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 
 /**
- * @author Rohit Dhiman | @aimflaiims
+ * 
  */
 class WebSocketController implements MessageComponentInterface
 {
